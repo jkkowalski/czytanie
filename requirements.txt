@@ -1,2 +1,4 @@
 pathlib2
 wxPython
+playsound
+requests
