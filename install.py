@@ -1,31 +1,40 @@
+from google.cloud import texttospeech
 import requests
 import json
 import os
 
+# Instantiates a client
+key_file = '/home/kuba/IdeaProjects/czytanie/tts-key.json'
+client = texttospeech.TextToSpeechClient.from_service_account_file(key_file)
+
+audio_config = texttospeech.types.AudioConfig(
+    audio_encoding=texttospeech.enums.AudioEncoding.MP3)
+
 levels = [
-    ['a', 'ma', 'am', 'mama'],
-    ['ta', 'at', 'tam', 'mata', 'tata', 'tama'],
-    ['o', 'om', 'mo', 'ot', 'to', 'oto', 'tom', 'tamto', 'atom'],
-    ['i', 'im', 'mi', 'it', 'ti', 'Timi', 'Mimi', 'Mati'],
-    ['da', 'do', 'di', 'ad', 'od', 'id', 'dama', 'data', 'moda'],
-    ['ko', 'ka', 'ki', 'ok', 'ak', 'ik', 'kot', 'kotka', 'kotki', 'kto', 'kita', 'kok', 'komoda', 'oko', 'maki', 'dok'],
-    ['la', 'lo', 'li', 'al', 'ol', 'lala', 'lama', 'lato', 'lada', 'loki', 'Lola', 'dola', 'molo', 'Lila', 'Tola', 'Ola', 'Ala']
+    ['dom', 'mama', 'kot', 'Ula', 'tata'],
+    ['tam', 'ma', 'kota', 'jest', 'da'],
+    ['koc', 'banan', 'słoń', 'zupa', 'stół'],
 ]
 
-def get_sound(text, target_file_name:None):
-    url='https://ttsmp3.com/makemp3.php'
-    data = {'msg': text, 'lang': 'Maja', 'source': 'ttsmp3'}
+def get_audio(text, target_file_name, voice_name='Wavenet-D'):
 
-    resp = requests.post(url, data)
-    data = json.loads(resp.text)
-
-    print(resp.text)
-    mp3 = requests.get(data['URL'])
     if not target_file_name:
-        target_file_name = text + '.mp3'
-    with open(target_file_name, 'wb') as mp3f:
-        mp3f.write(mp3.content)
-    print(f'Saved {target_file_name}')
+        target_file_name = f'{text}.mp3'
+
+    voice = texttospeech.types.VoiceSelectionParams(
+        language_code = 'pl-PL',
+        name = f'pl-PL-{voice_name}',
+        ssml_gender = texttospeech.enums.SsmlVoiceGender.NEUTRAL)
+
+    synthesis_input = texttospeech.types.SynthesisInput(text=text)
+    response = client.synthesize_speech(synthesis_input, voice, audio_config)
+
+    # The response's audio_content is binary.
+    with open(target_file_name, 'wb') as out:
+        # Write the response to the output file.
+        out.write(response.audio_content)
+        print(f'Audio content written to file "{target_file_name}"')
+
     return target_file_name
 
 tmp_dir = 'tmp'
@@ -45,4 +54,5 @@ for i in range(len(levels)):
             os.rename(os.path.join(tmp_dir, file_name), file_path)
             print(f'{txt} moved from {tmp_dir} to {dir}')
         else:
-            get_sound(txt, file_path)
+            get_audio(txt, file_path)
+
