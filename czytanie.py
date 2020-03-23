@@ -133,7 +133,7 @@ class ReadingFrame(wx.Frame):
         r, d, files = next(os.walk(os.path.join('resources', 'images')))
         file = random.choice(files)
         img = open(os.path.join('resources', 'images', file), 'r+b')
-        image = wx.Image(img, wx.BITMAP_TYPE_PNG)
+        image = wx.Image(img, wx.BITMAP_TYPE_ANY)
         ratio = min(1, max(image.Height / 600, image.Width / 800))
         image.Rescale(image.Width / ratio, image.Height / ratio, wx.IMAGE_QUALITY_HIGH)
         self.image.SetBitmap(image.ConvertToBitmap())

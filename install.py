@@ -12,8 +12,14 @@ audio_config = texttospeech.types.AudioConfig(
 
 levels = [
     ['dom', 'mama', 'kot', 'Ula', 'tata'],
-    ['tam', 'ma', 'kota', 'jest', 'da'],
-    ['koc', 'banan', 'słoń', 'zupa', 'stół'],
+    ['tam', 'ma', 'kota', 'jest', 'da', 'auto'],
+    ['koc', 'banan', 'słoń', 'zupa', 'stół', 'album'],
+    ['arbuz', 'kotki', 'oko', 'lalka', 'domek'],
+    ['antena', 'kto', 'loki', 'lody', 'miś', 'misie'],
+    ['osa', 'smok', 'sos', 'lis', 'kasa', 'list', 'lisek'],
+    ['rama', 'rana', 'rosa', 'ryś', 'rak', 'Romek'],
+    ['kura', 'Tadzio', 'kula', 'piłka', 'mata', 'kocyk', 'koza'],
+    ['pies', 'buty', 'robot', 'kubek', 'ryba', 'buda', 'Kuba'],
 ]
 
 def get_audio(text, target_file_name, voice_name='Wavenet-D'):
@@ -40,7 +46,7 @@ def get_audio(text, target_file_name, voice_name='Wavenet-D'):
 tmp_dir = 'tmp'
 os.makedirs(tmp_dir, exist_ok=True)
 
-for resource_file in (os.path.join(root, file) for root, dirs, files in os.walk('resources') for file in files):
+for resource_file in (os.path.join(root, file) for root, dirs, files in os.walk('resources/sounds') for file in files):
     os.rename(resource_file, os.path.join(tmp_dir, os.path.split(resource_file)[1]))
 
 
